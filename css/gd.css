@@ -1,0 +1,192 @@
+#gdSlides footer {
+    padding-top: 2em !important;
+}
+
+#gdSlides .logo {
+    background-image: url('../images/retina_GameDuell_logo.png');
+    background-size: cover;
+    width: 482px;
+    height: 144px;
+    margin: 0 auto 1em auto;
+}
+
+#gdSlides .badge {
+    background-image: url('../images/GD_presentation_flameflag.png');
+    width: 67px;
+    height: 86px;
+    position: absolute;
+    left: 10%;
+    top: 0;
+}
+
+#gdSlides .stacked {
+    position: absolute;
+    width: 100%;
+}
+
+#gdSlides .stacked.centered {
+    -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+}
+
+#gdSlides .banner {
+    min-height: 2em;
+    background-color: gold;
+    border-radius: 7px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+}
+
+#gdSlides .errorMessage {
+    background-color: red;
+}
+
+.reveal .slides section .fragment.fall-down {
+    -webkit-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+        transform: translateY(-100%);
+}
+.reveal .slides section .fragment.fall-down.visible {
+    -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+            transform: translateY(0);
+}
+
+.reveal .slides section .fragment.slide-in-right {
+    -webkit-transform: translateX(100%);
+    -ms-transform: translateX(100%);
+        transform: translateX(100%);
+}
+.reveal .slides section .fragment.slide-in-right.visible {
+     -webkit-transform: translateX(0);
+         -ms-transform: translateX(0);
+             transform: translateX(0);
+}
+
+.reveal .slides section .fragment.slide-in-left {
+    -webkit-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+        transform: translateX(-100%);
+}
+.reveal .slides section .fragment.slide-in-left.visible {
+     -webkit-transform: translateX(0);
+         -ms-transform: translateX(0);
+             transform: translateX(0);
+}
+
+.reveal .slides {
+    height: 100%;
+    top: 0;
+    margin-top: 0;
+}
+
+.reveal .slides section .slow {
+    transition: all 1.5s ease;
+    -webkit-transition: all 1s ease;
+}
+
+.reveal .slides>section.full {
+    min-height: 90% !important;
+    top: 0 !important;
+    padding: 0 !important;
+}
+
+.reveal .slides>section>section.full {
+    min-height: 100% !important;
+    top: 0 !important;
+    padding: 0 !important;
+}
+
+#gdSlides .card.ace {
+    background-image: url('../images/aceHearts.png');
+}
+
+#gdSlides .card.queen {
+    background-image: url('../images/queenHearts.png');
+}
+
+#gdSlides .card.king {
+    background-image: url('../images/kingHearts.png');
+}
+
+#gdSlides .hand {
+    width: 583px;
+    margin: auto;
+}
+
+#gdSlides .hand>.card {
+    float:left;
+    margin-right: -40px;
+}
+
+#gdSlides .card {
+    background-size: cover;
+    width: 161px;
+    height: 221px;
+}
+
+#gdSlides .fragment.visible>.card.slide {
+    -ms-transform: translateX(300px);
+        transform: translateX(300px);
+    -webkit-transform: translateX(300px);
+}
+
+#gdSlides .fragment.visible>.card.grow {
+    -webkit-transform: scale(1.5);
+        -ms-transform: scale(1.5);
+            transform: scale(1.5);
+}
+
+#gdSlides .card.slight-rotated-right {
+    -webkit-transform: rotate(25deg);
+        -ms-transform: rotate(25deg);
+            transform: rotate(25deg);
+}
+
+#gdSlides .card.slight-rotated-right.centered {
+    -webkit-transform: translateY(-50%) rotate(25deg);
+        -ms-transform: translateY(-50%) rotate(25deg);
+            transform: translateY(-50%) rotate(25deg);
+}
+
+#gdSlides .card.slight-rotated-left {
+    -webkit-transform: rotate(-35deg);
+        -ms-transform: rotate(-35deg);
+            transform: rotate(-35deg);
+}
+
+#gdSlides .card.slight-rotated-left.centered {
+    -webkit-transform: translateY(-50%) rotate(-35deg);
+        -ms-transform: translateY(-50%) rotate(-35deg);
+            transform: translateY(-50%) rotate(-35deg);
+}
+
+#gdSlides .meld {
+    margin: auto;
+    width: 221px;
+}
+
+#gdSlides .feedback {
+    width: 300px;
+    -webkit-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+}
+
+#gdSlides .card.playing {
+    -webkit-transform: translateY(120%) rotate(180deg);
+        -ms-transform: translateY(120%) rotate(180deg);
+            transform: translateY(120%) rotate(180deg);
+}
+
+#gdSlides .card.playing.visible {
+    -webkit-transform: translate(50%, -25%) rotate(0deg);
+        -ms-transform: translate(50%, -25%) rotate(0deg);
+            transform: translate(50%, -25%) rotate(0deg);
+}
+
+#gdSlides .playground {
+    width: 400px;
+    margin: auto;
+}
