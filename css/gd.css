@@ -42,6 +42,11 @@
     background-color: red;
 }
 
+#gdSlides .half {
+    height: 50%;
+    width: 50%;
+}
+
 .reveal .slides section .fragment.fall-down {
     -webkit-transform: translateY(-100%);
     -ms-transform: translateY(-100%);
