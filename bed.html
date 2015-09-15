@@ -6,6 +6,8 @@
 
     <title>Building Games with Akka FSM</title>
 
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon; charset=binary">
+
     <meta name="description" content="Building Games with Akka FSM">
     <meta name="author" content="Josep Prat">
 
@@ -53,7 +55,16 @@
             </footer>
         </section>
         <section>
-            <blockquote>"We've been playing games since humanity had civilization - there is something primal about our desire and our ability to play games"<br>Jane McGonigal</blockquote>
+            <section>
+                <h1>Why Games?</h1>
+            </section>
+            <section>
+                <blockquote>"We've been playing games since humanity had civilization - there is something primal about our desire and our ability to play games"<br>Jane McGonigal</blockquote>
+            </section>
+            <section id="motto" data-background="images/GD_motto.png" data-background-size="contain" data-transition="linear" data-background-transition="slide">
+                <h1>GameDuell</h1>
+                <h3>Bringing people together to have good times with games - Wherever, whenever!</h3><br><br><br>
+            </section>
         </section>
         <section>
             <h2>What to expect</h2>
@@ -85,18 +96,15 @@
                     <li>Responsive</li>
                 </ul>
             </section>
-        </section>
-        <section>
             <section>
-                <h2>What is a game behind the scenes?</h2>
+                <h2>A game is just a FSM behind the scenes</h2>
             </section>
             <section>
-                <h2>Is just a FSM</h2>
+                <h1>Not this!!!</h1>
                 <img class="half" src="images/fsm_monster.png" alt="http://img07.deviantart.net/1381/i/2008/268/9/e/the_flying_spaghetti_monster_by_kaddywhak.png"/>
-                <h1 class="fragment">Not this!!!</h1>
             </section>
             <section>
-                <h2>This is how it looks like</h2>
+                <h2>... But This</h2>
                 <img src="images/CPT-FSM-01.svg" alt="Finite-State Machine Sample" class="no-border"/>
                 <!-- TODO: create a nice sample -->
             </section>
@@ -107,12 +115,17 @@
                 </p>
             </section>
             <section>
-                <h2>Rules:</h2>
+                <h2>Rules</h2>
                 <ul>
                     <li>The machine is in only one state at a time</li>
                     <li>It can change from one state to another when initiated by a triggering event or condition</li>
                     <li>A particular FSM is defined by a list of its states, and the triggering condition for each transition.</li>
+                    <li>It can have a set of entry and exit actions</li>
                 </ul>
+            </section>
+            <section>
+                <h2>Translate Game to FSM</h2>
+
             </section>
         </section>
 

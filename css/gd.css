@@ -52,6 +52,11 @@
     box-shadow: 0 0;
 }
 
+#gdSlides #motto h1,
+#gdSlides #motto h3 {
+    color: white;
+}
+
 .reveal .slides section .fragment.fall-down {
     -webkit-transform: translateY(-100%);
     -ms-transform: translateY(-100%);
