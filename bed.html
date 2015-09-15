@@ -67,7 +67,7 @@
             </section>
         </section>
         <section>
-            <h2>What to expect</h2>
+            <h1>What to expect</h1>
             <ul>
                 <li>Converting Games to State Machines</li>
                 <li>What is Akka</li>
@@ -98,21 +98,20 @@
             </section>
             <section>
                 <h2>A game is just a FSM behind the scenes</h2>
+                <img src="images/CPT-FSM-01.svg" alt="Finite-State Machine Sample" class="no-border"/>
             </section>
             <section>
                 <h1>Not this!!!</h1>
                 <img class="half" src="images/fsm_monster.png" alt="http://img07.deviantart.net/1381/i/2008/268/9/e/the_flying_spaghetti_monster_by_kaddywhak.png"/>
             </section>
             <section>
-                <h2>... But This</h2>
-                <img src="images/CPT-FSM-01.svg" alt="Finite-State Machine Sample" class="no-border"/>
-                <!-- TODO: create a nice sample -->
-            </section>
-            <section>
                 <h2>Finite-State Machine</h2>
-                <p>
-                    Is a mathematical model of computation used to design both computer programs.  It is conceived as an abstract machine that can be in one of a finite number of states.
-                </p>
+                <blockquote>
+                    <p>
+                        Is a mathematical model of computation used to design both computer programs.  It is conceived as an abstract machine that can be in one of a finite number of states.
+                    </p>
+                    Wikipedia
+                </blockquote>
             </section>
             <section>
                 <h2>Rules</h2>
@@ -124,11 +123,55 @@
                 </ul>
             </section>
             <section>
-                <h2>Translate Game to FSM</h2>
-
+                <h2>Translating Games to FSM</h2>
             </section>
         </section>
-
+        <section>
+            <section>
+                <h1>What is Akka?</h1>
+            </section>
+            <section>
+                <h2>Akka is:</h2>
+                <ul>
+                    <li>Open-source toolkit and runtime</li>
+                    <li>Aims to simplify concurrent and distributed applications</li>
+                    <li>It supports multiple programming models</li>
+                    <li>Emphasizes the Actor Model, deeply inspired from the Erlang's Actor Model</li>
+                    <li>It has both Java and Scala APIs</li>
+                </ul>
+            </section>
+            <section>
+                <h2>Actors in General:</h2>
+                <p>Actors are lightweight programmable queues of immutable messages which are processed asynchronously and in a non-concurrent fashion. They can communicate with other actors via immutable messages.</p>
+                <p class="fragment">Also known as:<br/><code>Any => Unit</code></p>
+            </section>
+            <section>
+                <h2>Akka FSM:</h2>
+                <p>A subtype of Actors that model a Finite-State Machine. It's described as a set of relations of:<br/><code>State(S) x Event(E) -> Actions(A), State(S')</code></p>
+            </section>
+            <section>
+                <h2>A simple Example</h2>
+                <pre><code>
+//TODO add a sample here!
+                </code></pre>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h1>Games to Akka FSM</h1>
+            </section>
+            <section>
+                <h2>Knowing the Game</h2>
+            </section>
+        </section>
+        <section>
+            <h1>Q & A</h1>
+        </section>
+        <section>
+            <h1>Further Information</h1>
+            <div><a href="http://inside.gameduell.com/">inside.gameduell.com</a></div>
+            <div><a href="http://www.techtalk-berlin.de/">www.techtalk-berlin.de</a></div>
+        </section>
     </div>
 
 </div>
