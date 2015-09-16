@@ -77,7 +77,7 @@
         <section>
             <section>
                 <h1>Games</h1>
-                <h3 class="fragment">but... which types of games?</h3>
+                <h3 class="fragment">but... what type of games?</h3>
             </section>
             <section>
                 <h2>Single Player</h2>
@@ -108,22 +108,22 @@
                 <h2>Finite-State Machine</h2>
                 <blockquote>
                     <p>
-                        Is a mathematical model of computation used to design both computer programs.  It is conceived as an abstract machine that can be in one of a finite number of states.
+                        Is a mathematical model of computation used to design both computer programs and sequential logic circuits. It is conceived as an abstract machine that can be in one of a finite number of states.
                     </p>
                     Wikipedia
                 </blockquote>
             </section>
             <section>
-                <h2>Rules</h2>
+                <h2>How it works</h2>
                 <ul>
                     <li>The machine is in only one state at a time</li>
                     <li>It can change from one state to another when initiated by a triggering event or condition</li>
-                    <li>A particular FSM is defined by a list of its states, and the triggering condition for each transition.</li>
+                    <li>It is defined by both a list of its states and the triggering condition for each transition</li>
                     <li>It can have a set of entry and exit actions</li>
                 </ul>
             </section>
             <section>
-                <h2>Translating Games to FSM</h2>
+                <h2>Translating Games into FSM</h2>
                 <h3 class="fragment">Let's pick a Game</h2>
             </section>
             <section>
@@ -131,23 +131,25 @@
                 <img src="images/battleshipGame.png" alt="Battleship board game"/>
             </section>
             <section>
-                <h2>Rules:</h2>
+                <h2>Rules</h2>
                 <ul>
                     <li>Every player places their ships in a 10x10 board</li>
                     <li class="fragment">Each ship occupies a number of consecutive squares on the grid, vertically or horizontally</li>
                     <li class="fragment">Each type of ship occupies a determined number of squares</li>
-                    <li class="fragment">Each player selects a position to shot in turns</li>
+                    <li class="fragment">Each player selects a position to shoot in turns</li>
                     <li class="fragment">Opponent must reveal if a ship was hit or not</li>
                     <li class="fragment">When all squares occupied by a ship are hit, the ship is sunk</li>
-                    <li class="fragment">When a player sinks all opponent's ships, the game is finished</li>
+                    <li class="fragment">When a player sinks all opponent's ships, the game is over</li>
                 </ul>
             </section>
             <section>
                 <h2>Building the Finite-State Machine</h2>
+                <!-- TODO place ships one by one -->
                 <img src="images/battleship.svg" alt="Battleship game FSM" class="no-border"/>
             </section>
             <section>
                 <h2>Let's Add Timers</h2>
+                <!-- TODO update this after the previous is done -->
                 <img src="images/battleship_timers.svg" alt="Battleship game FSM with timers" class="no-border"/>
             </section>
         </section>
@@ -156,29 +158,69 @@
                 <h1>What is Akka?</h1>
             </section>
             <section>
-                <h2>Akka is:</h2>
+                <h2>Akka...</h2>
                 <ul>
-                    <li>Open-source toolkit and runtime</li>
+                    <li>Is an Open-source toolkit and runtime</li>
                     <li>Aims to simplify concurrent and distributed applications</li>
-                    <li>It supports multiple programming models</li>
-                    <li>Emphasizes the Actor Model, deeply inspired from the Erlang's Actor Model</li>
-                    <li>It has both Java and Scala APIs</li>
+                    <li>Supports multiple programming models</li>
+                    <li>Emphasizes the Actor Model, deeply inspired by Erlang's Actor Model</li>
+                    <li>Has both Java and Scala APIs</li>
                 </ul>
             </section>
             <section>
-                <h2>Actors in General:</h2>
+                <h2>Actors in General</h2>
                 <p>Actors are lightweight programmable queues of immutable messages which are processed asynchronously and in a non-concurrent fashion. They can communicate with other actors via immutable messages.</p>
                 <p class="fragment">Also known as:<br/><code>Any => Unit</code></p>
             </section>
             <section>
-                <h2>Akka FSM:</h2>
+                <h2>Akka FSM</h2>
                 <p>A subtype of Actors that model a Finite-State Machine. It's described as a set of relations of:<br/><code>State(S) x Event(E) -> Actions(A), State(S')</code></p>
             </section>
             <section>
-                <h2>A simple Example</h2>
-                <pre><code>
-//TODO add a sample here!
+                <h2>A simple Example (I)</h2>
+                <pre><code>sealed trait Message
+case object Ping extends Message
+case object Pong extends Message
+
+sealed trait State
+case object WaitingPing extends State
+case object WaitingPong extends State
+
+case class Data(times: Int)
                 </code></pre>
+            </section>
+            <section>
+                <h2>A simple Example (and II)</h2>
+                <pre><code>class PingPongFSM extends Actor with FSM[State, Data] {
+
+  startWith(WaitingPing, stateData = new Data(0))
+
+  when(WaitingPing) {
+    case Event(Ping, data:Data) =>
+      println(s"Received Ping, transition ${data.times}")
+      goto(WaitingPong) using new Data(data.times + 1)
+  }
+
+  when(WaitingPong) {
+    case Event(Pong, data:Data) =>
+      println(s"Received Pong, transition ${data.times}")
+      goto(WaitingPing) using new Data(data.times + 1)
+  }
+  initialize()
+}</code></pre>
+            </section>
+            <section>
+                <h2>Running It</h2>
+                <pre><code>val pingPongFSM = system.actorOf(Props[PingPongFSM], "PingPongFSM")
+pingPongFSM ! Ping
+pingPongFSM ! Ping
+pingPongFSM ! Pong
+pingPongFSM ! Ping
+
+>Received Ping, transition 0
+>[WARN] ... unhandled event Ping in state WaitingPong
+>Received Pong, transition 1
+>Received Ping, transition 2</code></pre>
             </section>
         </section>
         <section>
