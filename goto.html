@@ -78,7 +78,7 @@
                 <h3>Bringing people together to have good times with games - Wherever, whenever!</h3><br><br><br>
             </section>
             <section>
-                <h2>Some Facts</h2>
+                <h2>Who are we?</h2>
                 <ul>
                     <li>Founded in Berlin back in 2003</li>
                     <li>Over 220 Employees</li>
@@ -166,13 +166,8 @@
             </section>
             <section>
                 <h2>Building the Finite-State Machine</h2>
-                <!-- TODO place ships one by one -->
+<!-- TODO generate the state machine step by step -->
                 <img src="images/battleship.svg" alt="Battleship game FSM" class="no-border"/>
-            </section>
-            <section>
-                <h2>Let's Add Timers</h2>
-                <!-- TODO update this after the previous is done -->
-                <img src="images/battleship_timers.svg" alt="Battleship game FSM with timers" class="no-border"/>
             </section>
         </section>
         <section>
@@ -204,14 +199,6 @@
                 </ul>
             </section>
             <section>
-                <h2>Akka FSM</h2>
-                <p>A subtype of Actors that model a Finite-State Machine. It's described as a set of relations of:<br/><code>State(S) x Event(E) -> Actions(A), State(S')</code></p>
-            </section>
-            <section>
-                <h1 class="blink">Warning!!</h1>
-                <h1 class="blink">Scala Code Ahead!!</h1>
-            </section>
-            <section>
                 <h2>A simple Example (I)</h2>
                 <pre><code>sealed trait Message
 case object Ping extends Message
@@ -226,6 +213,27 @@ case class Data(times: Int)
             </section>
             <section>
                 <h2>A simple Example (and II)</h2>
+<!-- TODO add a become ping pong sample -->
+            </section>
+            <section>
+                <h2>Running It</h2>
+                <pre><code>val pingPongActor = system.actorOf(Props[PingPongActor], "PingPongActor")
+pingPongActor ! Ping
+pingPongActor ! Ping
+pingPongActor ! Pong
+pingPongActor ! Ping
+
+>Received Ping, transition 0
+>[WARN] ... unhandled event Ping in state WaitingPong
+>Received Pong, transition 1
+>Received Ping, transition 2</code></pre>
+            </section>
+            <section>
+                <h2>Akka FSM</h2>
+                <p>A subtype of Actors that model a Finite-State Machine. It's described as a set of relations of:<br/><code>State(S) x Event(E) -> Actions(A), State(S')</code></p>
+            </section>
+            <section>
+                <h2>A simple Example</h2>
                 <pre><code>class PingPongFSM extends Actor with FSM[State, Data] {
 
   startWith(WaitingPing, stateData = new Data(0))
@@ -266,6 +274,13 @@ pingPongFSM ! Ping
                 <h2>Remember the Battleship Game?</h2>
                 <img src="images/battleship.svg" alt="Battleship game FSM" class="no-border"/>
             </section>
+            <section>
+                <h2>How many actors?</h2>
+                <p>It depends...</p>
+                <ul>
+                    <li>How many "units are there?</li>
+                    <li>Are there too many states?</li>
+                    <li>Other factors...</li>
             <section>
                 <h2>Let's create the State Objects</h2>
                 <pre><code>sealed trait BattleshipState
