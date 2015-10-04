@@ -62,7 +62,7 @@
             <h1 >Building Games with Akka FSM</h1>
             <footer>
                 <p class="author">
-                    <small>GOTO nights| 2015/10/07 | Josep Prat | GameDuell GmbH | <a href="http://twitter.com/jlprat">@jlprat</a></small>
+                    <small>GOTO nights | 2015/10/07 | Josep Prat | GameDuell GmbH | <a href="http://twitter.com/jlprat">@jlprat</a></small>
                 </p>
             </footer>
         </section>
@@ -166,7 +166,7 @@
             </section>
             <section>
                 <h2>Building the Finite-State Machine</h2>
-<!-- TODO generate the state machine step by step -->
+<!-- TODO generate the state machine step by step? -->
                 <img src="images/battleship.svg" alt="Battleship game FSM" class="no-border"/>
             </section>
         </section>
@@ -207,8 +207,6 @@ case object Pong extends Message
 sealed trait State
 case object WaitingPing extends State
 case object WaitingPong extends State
-
-case class Data(times: Int)
                 </code></pre>
             </section>
             <section>
@@ -247,7 +245,20 @@ pingPongActor ! Ping
                 <p>A subtype of Actors that model a Finite-State Machine. It's described as a set of relations of:<br/><code>State(S) x Event(E) -> Actions(A), State(S')</code></p>
             </section>
             <section>
-                <h2>A simple Example</h2>
+                <h2>A simple Example (I)</h2>
+                <pre><code>sealed trait Message
+                    case object Ping extends Message
+                    case object Pong extends Message
+
+                    sealed trait State
+                    case object WaitingPing extends State
+                    case object WaitingPong extends State
+
+                    case class Data(times: Int)
+                </code></pre>
+            </section>
+            <section>
+                <h2>A simple Example (and II)</h2>
                 <pre><code>class PingPongFSM extends Actor with FSM[State, Data] {
 
   startWith(WaitingPing, stateData = new Data(0))
@@ -297,6 +308,11 @@ pingPongFSM ! Ping
                     <li>Other factors...</li>
             </section>
             <section>
+                <h1 class="blink">WARNING!</h1>
+                <h2>The Following Code has been simplified for clarity</h2>
+                <h3>Don't run this code at home!</h3>
+            </section>
+            <section>
                 <h2>Let's create the State Objects</h2>
                 <pre><code>sealed trait BattleshipState
 case object WaitingForPlayers extends BattleshipState
@@ -338,9 +354,12 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
  ...
  when(WaitingForPlayers) {
   case Event(PlaceShip(playerId, shipId, coord, size, vertical), data)=>
-    goto(PlacingShips) using
-      data.placeShip(playerId, shipId, coord, size, vertical)
+    if (data.canShipBePlaced(playerId, shipId, coord, size, vertical))
+      goto(PlacingShips) using
+        data.placeShip(playerId, shipId, coord, size, vertical)
+    else stay
  }
+ ...
 }</code></pre>
                 <h3 class="fragment">Easy, huh?</h3>
             </section>
@@ -352,7 +371,9 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
                 <h2>Let's focus on the second state</h2>
                 <pre><code>when(PlacingShips) {
  case Event(PlaceShip(playerId, shipId, coord, size, vertical), data)=>
-   stay using data.placeShip(playerId, shipId, coord, size, vertical)
+   if (data.canShipBePlaced(playerId, shipId, coord, size, vertical))
+     stay using data.placeShip(playerId, shipId, coord, size, vertical)
+   else stay
  case Event(ShipsPlaced, data) =>
    goto(WaitingForNextPlayer)
 }</code></pre>
@@ -475,9 +496,19 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
             <h1>Q & A</h1>
         </section>
         <section>
+            <h1>Link to Slides</h1>
+            <a href="https://jlprat.github.io/Building-Games-with-Akka-FSM/goto.html">jlprat.github.io/Building-Games-with-Akka-FSM/goto.html</a>
+            <p>Code will appear in GitHub repo soon</p>
+        </section>
+        <section>
             <h1>Further Information</h1>
             <div><a href="http://inside.gameduell.com/">inside.gameduell.com</a></div>
             <div><a href="http://www.techtalk-berlin.de/">www.techtalk-berlin.de</a></div>
+            <footer>
+                <p class="author">
+                    GOTO nights | 2015/10/07 | Josep Prat | <a href="http://twitter.com/jlprat">@jlprat</a>
+                </p>
+            </footer>
         </section>
     </div>
 
