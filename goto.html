@@ -71,7 +71,7 @@
                 <h1>Why Games?</h1>
             </section>
             <section>
-                <blockquote>"We've been playing games since humanity had civilization - there is something primal about our desire and our ability to play games"<br>Jane McGonigal</blockquote>
+                <blockquote>"We've been playing games since humanity had civilization - there is something primal about our desire and our ability to play games"<br><span class="author">Jane McGonigal</span></blockquote>
             </section>
             <section id="motto" data-background="images/GD_motto.png" data-background-size="contain" data-transition="linear" data-background-transition="slide">
                 <h1>GameDuell</h1>
@@ -123,8 +123,8 @@
                 <img src="images/simpleStateMachine.svg" alt="Finite-State Machine Sample" class="no-border"/>
             </section>
             <section>
-                <h1>Not this!!!</h1>
-                <img class="half" src="images/fsm_monster.png" alt="http://img07.deviantart.net/1381/i/2008/268/9/e/the_flying_spaghetti_monster_by_kaddywhak.png"/>
+                <h1 class="fragment onTop blink">Not this!!!</h1>
+                <img class="below half" src="images/fsm_monster.png" alt="http://img07.deviantart.net/1381/i/2008/268/9/e/the_flying_spaghetti_monster_by_kaddywhak.png"/>
             </section>
             <section>
                 <h2>Finite-State Machine</h2>
@@ -132,7 +132,7 @@
                     <p>
                         Is a mathematical model of computation used to design both computer programs and sequential logic circuits. It is conceived as an abstract machine that can be in one of a finite number of states.
                     </p>
-                    Wikipedia
+                    <span class="author">Wikipedia</span>
                 </blockquote>
             </section>
             <section>
@@ -213,7 +213,22 @@ case class Data(times: Int)
             </section>
             <section>
                 <h2>A simple Example (and II)</h2>
-<!-- TODO add a become ping pong sample -->
+                <pre><code>class PingPongActor extends Actor {
+
+  def ping(times: Int): Receive = {
+    case Ping =>
+      println(s"Actor Received Ping, transition $times")
+      context.become(pong(times + 1))
+  }
+
+  def pong(times: Int): Receive = {
+    case Pong =>
+      println(s"Actor Received Pong, transition $times")
+      context.become(ping(times + 1))
+  }
+
+  override def receive: Receive = ping(0)
+}</code></pre>
             </section>
             <section>
                 <h2>Running It</h2>
@@ -224,7 +239,6 @@ pingPongActor ! Pong
 pingPongActor ! Ping
 
 >Received Ping, transition 0
->[WARN] ... unhandled event Ping in state WaitingPong
 >Received Pong, transition 1
 >Received Ping, transition 2</code></pre>
             </section>
@@ -324,8 +338,8 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
  ...
  when(WaitingForPlayers) {
   case Event(PlaceShip(playerId, shipId, coord, size, vertical), data)=>
-  goto(PlacingShips) using
-    data.placeShip(playerId, shipId, coord, size, vertical)
+    goto(PlacingShips) using
+      data.placeShip(playerId, shipId, coord, size, vertical)
  }
 }</code></pre>
                 <h3 class="fragment">Easy, huh?</h3>
@@ -342,13 +356,14 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
  case Event(ShipsPlaced, data) =>
    goto(WaitingForNextPlayer)
 }</code></pre>
-                <h3>Who sends this Ships Placed message?</h3>
+                <h3 class="fragment">Who sends this Ships Placed message?</h3>
             </section>
             <section>
                 <h2>We must define our Entry Actions!</h2>
                 <pre><code>onTransition {
  case _ -> PlacingShips =>
-   if (nextStateData.shipsToPlace.forall(_.isEmpty)) self ! ShipsPlaced</code></pre>
+   if (nextStateData.shipsToPlace.forall(_.isEmpty)) self ! ShipsPlaced
+}</code></pre>
             </section>
             <section>
                 <h2>However, This won't work</h2>
@@ -361,8 +376,8 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
             <section>
                 <h2>Let's check the code again</h2>
                 <pre><code>when(PlacingShips) {
- case Event(PlacedShip, _) =>
-  goto(CheckingPlacedShips)
+  case Event(PlacedShip, _) =>
+    goto(CheckingPlacedShips)
 }
 
 when(CheckingPlacedShips) {
@@ -376,7 +391,7 @@ when(CheckingPlacedShips) {
                 <h2>And the Transition Handlers</h2>
                 <pre><code>case _ -> PlacingShips => self ! PlacedShip
 case _ -> CheckingPlacedShips =>
- if (nextStateData.shipsToPlace.forall(_.isEmpty)) self ! ShipsPlaced</code></pre>
+  if (nextStateData.shipsToPlace.forall(_.isEmpty)) self ! ShipsPlaced</code></pre>
             </section>
             <section>
                 <h2>Let's tackle the remaining states</h2>
@@ -385,21 +400,21 @@ case _ -> CheckingPlacedShips =>
             <section>
                 <h2>Let's tackle the remaining states</h2>
                 <pre><code>when(WaitingForNextPlayer) {
- case Event(NextPlayer, data) =>
-  stay using data.copy(currentPlayer = data.opponent)
- case Event(PlaceShot(playerId, x, y), data) =>
-  goto(CheckingShot) using data.copy(pendingShot = Some(x, y))
+  case Event(NextPlayer, data) =>
+    stay using data.copy(currentPlayer = data.opponent)
+  case Event(PlaceShot(playerId, x, y), data) =>
+    goto(CheckingShot) using data.copy(pendingShot = Some(x, y))
 }
 when(CheckingShot) {
- case Event(Miss, data) =>
-  goto(WaitingForNextPlayer) using data.copy(pendingShot = None)
- case Event(Hit, data) =>
-  goto(HitShip) using data.shoot.copy(pendingShot = None)
+  case Event(Miss, data) =>
+    goto(WaitingForNextPlayer) using data.copy(pendingShot = None)
+  case Event(Hit, data) =>
+    goto(HitShip) using data.shoot.copy(pendingShot = None)
 }
 when(HitShip) {
- case Event(ShipsAlive, data) =>
-  goto(WaitingForNextPlayer) using data
- case Event(AllShipsSunk, _) =>  goto(EndGame)
+  case Event(ShipsAlive, data) =>
+    goto(WaitingForNextPlayer) using data
+  case Event(AllShipsSunk, _) =>  goto(EndGame)
 }</code></pre>
             </section>
             <section>
@@ -429,14 +444,16 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
             <section>
                 <h2>We can add State Timeouts</h2>
                 <pre><code>when(WaitingForNextPlayer, stateTimeout = 30 seconds) {
- case Event(NextPlayer, data) =>
-  stay using data.copy(currentPlayer = data.opponent)
- case Event(PlaceShot(playerId, x, y), data) =>
-  goto(CheckingShot) using data.copy(pendingShot = Some(x, y))
- case Event(StateTimeout, data) =>
-  stay using data.copy(currentPlayer = data.opponent)
+  case Event(NextPlayer, data) =>
+    stay using data.copy(currentPlayer = data.opponent)
+  case Event(PlaceShot(playerId, x, y), data) =>
+    goto(CheckingShot) using data.copy(pendingShot = Some(x, y))
+  case Event(StateTimeout, data) =>
+    stay using data.copy(currentPlayer = data.opponent)
 }</code></pre>
             </section>
+            <!-- TODO Add Tests -->
+            <!-- TODO Add Scalability mechanisms -->
         </section>
         <section>
             <section>

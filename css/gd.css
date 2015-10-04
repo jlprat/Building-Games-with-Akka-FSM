@@ -57,6 +57,22 @@
     color: white;
 }
 
+#gdSlides .onTop {
+    position: relative;
+    top: 1.3em;
+    z-index: 1;
+    color: red;
+}
+
+#gdSlides .below {
+    position: relative;
+    top: -1em;
+}
+
+#gdSlides blockquote .author {
+    font-style: normal;
+}
+
 #gdSlides .blink {
   animation: blink 1s steps(5, start) infinite;
   -webkit-animation: blink 1s steps(5, start) infinite;
