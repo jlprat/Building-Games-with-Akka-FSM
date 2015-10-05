@@ -290,6 +290,23 @@ pingPongFSM ! Ping
 >Received Pong, transition 1
 >Received Ping, transition 2</code></pre>
             </section>
+            <section>
+                <h2>What about tests?</h2>
+                <pre><code>"A PingPongFSM actor" must {
+  "behave in Ping Pong fashion" in {
+    val pingPongFSM = TestFSMRef(new PingPongFSM)
+    assert(pingPongFSM.stateName === WaitingPing)
+    pingPongFSM ! Ping
+    assert(pingPongFSM.stateName === WaitingPong)
+    pingPongFSM ! Ping
+    assert(pingPongFSM.stateName === WaitingPong)
+    pingPongFSM ! Pong
+    assert(pingPongFSM.stateName === WaitingPing)
+    pingPongFSM ! Ping
+    assert(pingPongFSM.stateName === WaitingPong)
+  }
+}</code></pre>
+            </section>
         </section>
         <section>
             <section>
@@ -474,7 +491,11 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
 }</code></pre>
             </section>
             <!-- TODO Add Tests -->
-            <!-- TODO Add Scalability mechanisms -->
+            <section>
+                <h2>How do we orchestrate all these?</h2>
+                <!-- TODO add structure -->
+            </section>
+           <!-- Think about scalability -->
         </section>
         <section>
             <section>
@@ -496,14 +517,14 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
             <h1>Q & A</h1>
         </section>
         <section>
-            <h1>Link to Slides</h1>
-            <a href="https://jlprat.github.io/Building-Games-with-Akka-FSM/goto.html">jlprat.github.io/Building-Games-with-Akka-FSM/goto.html</a>
-            <p>Code will appear in GitHub repo soon</p>
-        </section>
-        <section>
             <h1>Further Information</h1>
             <div><a href="http://inside.gameduell.com/">inside.gameduell.com</a></div>
             <div><a href="http://www.techtalk-berlin.de/">www.techtalk-berlin.de</a></div>
+        </section>
+        <section>
+            <h1>Link to Slides</h1>
+            <a href="https://jlprat.github.io/Building-Games-with-Akka-FSM/goto.html">jlprat.github.io/Building-Games-with-Akka-FSM/goto.html</a>
+            <p>Code will appear in GitHub repo soon...</p>
             <footer>
                 <p class="author">
                     GOTO nights | 2015/10/07 | Josep Prat | <a href="http://twitter.com/jlprat">@jlprat</a>
