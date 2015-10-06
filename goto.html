@@ -317,11 +317,11 @@ pingPongFSM ! Ping
             </section>
             <section>
                 <h2>How many actors?</h2>
-                <p>It depends...</p>
-                <ul>
-                    <li>How many "units are there?</li>
+                <p class="fragment">It depends...</p>
+                <ul class="fragment">
+                    <li>How many "units" do exist?</li>
                     <li>Are there too many states?</li>
-                    <li>Other factors...</li>
+                    <li>Is some part I/O extensive?</li>
             </section>
             <section>
                 <h2>How do we orchestrate all these?</h2>
@@ -408,7 +408,7 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
             </section>
             <section>
                 <h2>However, This won't work</h2>
-                <p><code>onTransition</code> only works when there is a transition of a state. Not when staying</p>
+                <blockquote class="fragment">def onTransition(transitionHandler: TransitionHandler): Unit<hr>Set handler which is called upon each state transition, i.e. not when staying in the same state.</blockquote>
             </section>
             <section>
                 <h2>State Machine Revisited!</h2>
@@ -494,8 +494,9 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
 }</code></pre>
             </section>
             <!-- TODO Add Tests -->
-
-           <!-- Think about scalability -->
+            <section>
+                <h2>Cool...</h2><h2 class="fragment">but what if I have more than 2 users?</h2>
+            </section>
             <section>
                 <h2>Scaling Up</h2>
                 <img class="no-border" src="images/ScaleUpBattleshipOrchestration.svg" alt="Scale Up"/>
@@ -517,8 +518,8 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
                 </ul>
             </section>
             <section>
-                <h2>For the next game you build...</h2>
-                <h1 class="fragment">...give Akka a try</h1>
+                <h1>And remember...</h1>
+                <h2 class="fragment">JVM Developers can also build Games!</h2>
             </section>
         </section>
         <section>
@@ -540,7 +541,6 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
             </footer>
         </section>
     </div>
-
 </div>
 
 <script src="lib/js/head.min.js"></script>
