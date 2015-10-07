@@ -366,14 +366,18 @@ case object EndGame extends BattleshipState</code></pre>
             <section>
                 <h2>Now the Messages Sent</h2>
                 <pre><code>sealed trait BattleshipMessages
-case class PlaceShip(playerId: Int, id: Short, coord: Coord, size: Short, vertical: Boolean) extends BattleshipMessages
+case class PlaceShip(playerId: Int, id: Short, coord: Coord,
+     size: Short, vertical: Boolean) extends BattleshipMessages
 case object ShipsPlaced
 case object NextPlayer
-case class PlaceShot(playerId: Int, coord: Coord) extends BattleshipMessages
+case class PlaceShot(playerId: Int, coord: Coord)
+     extends BattleshipMessages
 case object Miss extends BattleshipMessages
 case object Hit extends BattleshipMessages
 case object ShipsAlive extends BattleshipMessages
-case object AllShipsSunk extends BattleshipMessages</code></pre>
+case object AllShipsSunk extends BattleshipMessages
+
+case class Message(msg: String)</code></pre>
             </section>
             <section>
                 <h2>What do we need as a State Data?</h2>
@@ -391,15 +395,16 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
             </section>
             <section>
                 <h2>Let's focus on the first State</h2>
-                <pre><code>class BattleShipActor extends ActorLogging
-   with FSM[BattleshipState, BattleshipData] {
+                <pre><code>class BattleShipActor(player1: ActorRef, player2: ActorRef)
+   extends ActorLogging with FSM[BattleshipState, BattleshipData] {
  ...
  when(WaitingForPlayers) {
   case Event(PlaceShip(playerId, shipId, coord, size, vertical), data)=>
     if (data.canShipBePlaced(playerId, shipId, coord, size, vertical))
-      goto(PlacingShips) using
-        data.placeShip(playerId, shipId, coord, size, vertical)
-    else stay
+      sender ! Message("Placed")
+    else sender ! Message("Wrong Position")
+    goto(PlacingShips) using
+      data.placeShip(playerId, shipId, coord, size, vertical)
  }
  ...
 }</code></pre>
@@ -415,9 +420,13 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
                 <pre><code>when(PlacingShips) {
  case Event(PlaceShip(playerId, shipId, coord, size, vertical), data)=>
    if (data.canShipBePlaced(playerId, shipId, coord, size, vertical))
+     if (data.canShipBePlaced(playerId, shipId, coord, size, vertical))
+       sender ! Message("Placed")
+     else sender ! Message("Wrong Position")
      stay using data.placeShip(playerId, shipId, coord, size, vertical)
    else stay
  case Event(ShipsPlaced, data) =>
+   players.foreach(_ ! Message("Ships placed"))
    goto(WaitingForNextPlayer)
 }</code></pre>
                 <h3 class="fragment">Who sends this Ships Placed message?</h3>
@@ -451,8 +460,13 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
 
 when(CheckingPlacedShips) {
  case Event(PlaceShip(playerId, shipId, coord, size, vertical), data)=>
-  goto(PlacingShips) using data.placeShip(playerId, shipId, coord, size, vertical)
+  if (data.canShipBePlaced(playerId, shipId, coord, size, vertical))
+    sender ! Message("Placed")
+  else sender ! Message("Wrong Position")
+  goto(PlacingShips)
+    using data.placeShip(playerId, shipId, coord, size, vertical)
  case Event(ShipsPlaced, _) =>
+  players.foreach(_ ! Message("Ships placed"))
   goto(WaitingForNextPlayer)
 }</code></pre>
                 <aside class="notes">Here we can see that the old state is only meant to transition to the new state, which contains all the logic we saw before.
@@ -493,22 +507,22 @@ when(HitShip) {
             <section>
                 <h2>With their Entry Actions</h2>
                 <pre><code>case _ -> WaitingForNextPlayer =>
-  log.info(s"End of ${nextStateData.currentPlayer} turn")
+  players.foreach(_ ! Message(s"End of ${nextStateData.currentPlayer} turn"))
   self ! NextPlayer
 case _ -> CheckingShot =>
   if (nextStateData.wouldBeAShot) {
-    log.info("Ship Hit at ${nextStateData.pendingShot}!")
+    players.foreach(_ ! Message(s"Ship Hit at ${nextStateData.pendingShot}!"))
     self ! Hit
   }
   else {
-    log.info(s"Missed at ${nextStateData.pendingShot}!")
+    players.foreach(_ ! Message(s"Missed at ${nextStateData.pendingShot}!"))
     self ! Miss
   }
 case _ -> HitShip =>
   if (nextStateData.areShipsAlive(nextStateData.opponent))
     self ! ShipsAlive
   else self ! AllShipsSunk
-case _ -> EndGame => log.info("Game is Over")</code></pre>
+case _ -> EndGame => players.foreach(_ ! Message("Game is Over"))</code></pre>
                 <aside class="notes">The same goes for the transitions associated to them.</aside>
             </section>
             <section>
@@ -529,7 +543,58 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
 }</code></pre>
                 <aside class="notes">Adding a timeout is pretty easy, as we can extend the when definition with an amount of time that the machine can stay in this specific state.</aside>
             </section>
-            <!-- TODO Add Tests -->
+            <section>
+                <h2>Now Let's Add Some Tests!</h2>
+            </section>
+            <section>
+                <h2>Simple Test...</h2>
+                <pre><code>def getBattleshipFSM() = {
+  val player1Probe = TestProbe()
+  val player2Probe = TestProbe()
+  TestFSMRef(new BattleShipActor(player1Probe.ref, player2Probe.ref))
+}
+"A Battleship actor" should {
+  "start in WaitingForPlayers state and be initialized" in {
+    val battleshipFSM = getBattleshipFSM()
+    assert(battleshipFSM.stateName === WaitingForPlayers)
+    val stateData = battleshipFSM.stateData
+    assert(stateData.currentPlayer === 1)
+    assert(stateData.grids.forall(_.isEmpty))
+    assert(stateData.pendingShot === None)
+  }
+}</code></pre>
+            </section>
+            <section>
+                <h2>Now Checking Transitions...</h2>
+                <pre><code>"A Battleship actor" when {
+  "in WaitingForPlayer state" can {
+    "go to CheckingPlacedShips state" in {
+      val battleshipFSM = getBattleshipFSM()
+      assert(battleshipFSM.stateName === WaitingForPlayers)
+      battleshipFSM ! PlaceShip(playerId = 1, id = 2,
+        Coord(x = 1, y = 1), size = 3, vertical = true)
+      assert(battleshipFSM.stateName === CheckingPlacedShips)
+      assert(battleshipFSM.stateData.isOccupied(playerIdx = 1,
+        Coord(x = 1, y = 1)))
+    }
+  }
+}</code></pre>
+            </section>
+            <section>
+                <h2>And Checking Intermediate States</h2>
+                <pre><code>"A Battleship actor" when {
+  "in CheckingPlacedShips state" can {
+    "go to WaitingForNextPlayer" in {
+      val battleshipFSM = getBattleshipFSM()
+      battleshipFSM.setState(CheckingPlacedShips, battleshipFSM.stateData)
+      assert(battleshipFSM.stateName === CheckingPlacedShips)
+      battleshipFSM ! ShipsPlaced
+      assert(battleshipFSM.stateName === WaitingForNextPlayer)
+      assert(battleshipFSM.isStateTimerActive)
+    }
+  }
+}</code></pre>
+            </section>
             <section>
                 <h2>Cool...</h2><h2 class="fragment">but what if I have more than 2 users?</h2>
             </section>
