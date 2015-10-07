@@ -383,7 +383,7 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
                     <li class="fragment">Ships to Place</li>
                     <li class="fragment">Shot to Check</li>
                 </ul>
-                <aside>This is not a law, every developer can come up with a different version of the Sate class, as it's the most subjective one.</aside>
+                <aside class="notes">This is not a law, every developer can come up with a different version of the Sate class, as it's the most subjective one.</aside>
             </section>
             <section>
                 <h2>Let's focus on the first state</h2>
@@ -403,7 +403,7 @@ case object AllShipsSunk extends BattleshipMessages</code></pre>
  }
  ...
 }</code></pre>
-                <h3 class="fragment">Easy, huh?</h3
+                <h3 class="fragment">Easy, huh?</h3>
                 <aside class="notes">Almost direct translation from the FSM. This state might also contain some initialization code for example</aside>
             </section>
             <section>
@@ -557,6 +557,8 @@ case _ -> EndGame => log.info("Game is Over")</code></pre>
                     <li>You might need to adapt your FSM to Akka</li>
                     <li>Extensive use of Mocks for testing</li>
                 </ul>
+                <aside class="notes">There both good points and bad points when developing FSM with Akka. The toolkit provides a nice DSL and thanks to the actor model you can scale easily without needing to care about locks.
+                However, you might need to adapt your FSM and you need to use a lot of mocks.</aside>
             </section>
             <section>
                 <h1>And remember...</h1>
